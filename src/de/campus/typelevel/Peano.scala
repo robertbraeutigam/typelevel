@@ -49,4 +49,13 @@ object Peano {
     given basic[A <: Nat]: >[Succ[A], _0] with                                        {}
     given inductive[A <: Nat, B <: Nat](using gte: >[A, B]): >[Succ[A], Succ[B]] with {}
   }
+
+  // Greater?
+  type >?[A <: Nat, B <: Nat] = Option[A > B]
+
+  object >? {
+    given exists[A <: Nat, B <: Nat](using ev: A > B): (A >? B)        = Option(ev)
+    given notExistsEqual[A <: Nat, B <: Nat](using A =:= B): (A >? B)  = Option.empty
+    given notExistsLess[A <: Nat, B <: Nat](using ev: A < B): (A >? B) = Option.empty
+  }
 }

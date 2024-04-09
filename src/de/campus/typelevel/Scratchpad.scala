@@ -1,6 +1,7 @@
 package de.campus.typelevel
 
 import de.campus.typelevel.Peano.*
+import de.campus.typelevel.Peano.>?.given
 
 object Scratchpad extends App {
   val one = Natural[_1, _1](1)
