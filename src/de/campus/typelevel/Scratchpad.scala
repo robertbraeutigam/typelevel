@@ -9,5 +9,5 @@ object Scratchpad extends App {
 
   def readSensor(): Natural[_0, _10] = Natural(5)
 
-  val r1 = one + two + one
+  val r1 = one + two + one + two
 }
