@@ -33,4 +33,20 @@ object Peano {
         override type Result = Succ[R]
       }
   }
+
+  // Less
+  trait <[A <: Nat, B <: Nat]
+
+  object < {
+    given basic[A <: Nat]: <[_0, Succ[A]] with                                        {}
+    given inductive[A <: Nat, B <: Nat](using lte: <[A, B]): <[Succ[A], Succ[B]] with {}
+  }
+
+  // Greater
+  trait >[A <: Nat, B <: Nat]
+
+  object > {
+    given basic[A <: Nat]: >[Succ[A], _0] with                                        {}
+    given inductive[A <: Nat, B <: Nat](using gte: >[A, B]): >[Succ[A], Succ[B]] with {}
+  }
 }
