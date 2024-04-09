@@ -15,11 +15,16 @@ object Peano {
   trait +[A <: Nat, B <: Nat] {
     type Result <: Nat
   }
-  object +                    {
+
+  object + {
     type PlusFull[A <: Nat, B <: Nat, R <: Nat] = +[A, B] { type Result = R }
 
-    given plusBasic[N <: Nat]: PlusFull[_0, N, N] = new +[_0, N] {
-      type Result = N
+    given basic[N <: Nat]: PlusFull[_0, N, N]                                                                        = new +[_0, N] {
+      override type Result = N
     }
+    given inductive[A <: Nat, N <: Nat, R <: Nat](using induction: PlusFull[A, N, R]): PlusFull[Succ[A], N, Succ[R]] =
+      new +[Succ[A], N] {
+        override type Result = Succ[R]
+      }
   }
 }
