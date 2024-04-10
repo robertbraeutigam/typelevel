@@ -28,8 +28,10 @@ object Natural {
     }
 
     def createNatural(n: Int): Expr[Any] = {
-      val tpe = peanoType(n)
-      '{ Natural[_0, _0](0) }
+      // report.error(s"Type for $n is ${peanoType(n)}")
+      peanoType(n).asType match {
+        case '[t] => '{ Natural[_0, _0](${ Expr(BigInt(n)) }) }
+      }
     }
 
     n.value match {
