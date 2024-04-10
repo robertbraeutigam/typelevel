@@ -2,7 +2,7 @@ package de.campus.typelevel
 
 object Peano {
   sealed trait Nat
-  class _0             extends Nat
+  trait _0             extends Nat
   class Succ[N <: Nat] extends Nat
 
   type _1  = Succ[_0]
