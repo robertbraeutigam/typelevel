@@ -37,4 +37,10 @@ object PeanoOps {
   given existsGreaterOption[A <: Nat, B <: Nat](using ev: A > B): (A >? B)        = Option(ev)
   given notExistsEqualGreaterOption[A <: Nat, B <: Nat](using A =:= B): (A >? B)  = Option.empty
   given notExistsLessGreaterOption[A <: Nat, B <: Nat](using ev: A < B): (A >? B) = Option.empty
+
+  // <=
+  trait <=[MIN <: Nat, MAX <: Nat]
+
+  given basicLessOrEqual[MAX <: Nat]: <=[_0, MAX] with                                                      {}
+  given inductiveLessOrEqual[MIN <: Nat, MAX <: Nat](using ev: <=[MIN, MAX]): <=[Succ[MIN], Succ[MAX]] with {}
 }
