@@ -8,6 +8,4 @@ object Scratchpad extends App {
   val two  = new Natural[_2, _2](2)
 
   def readSensor(): Natural[_0, _10] = ???
-
-  val strange = new Natural[_10, _0](0)
 }
