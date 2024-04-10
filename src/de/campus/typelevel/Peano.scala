@@ -15,47 +15,4 @@ object Peano {
   type _8  = Succ[_7]
   type _9  = Succ[_8]
   type _10 = Succ[_9]
-
-  // Plus
-  trait +[A <: Nat, B <: Nat] {
-    type Result <: Nat
-  }
-
-  object + {
-    type PlusFull[A <: Nat, B <: Nat, R <: Nat] = +[A, B] { type Result = R }
-
-    given basic[N <: Nat]: PlusFull[_0, N, N]                                                                        =
-      new +[_0, N] {
-        override type Result = N
-      }
-    given inductive[A <: Nat, N <: Nat, R <: Nat](using induction: PlusFull[A, N, R]): PlusFull[Succ[A], N, Succ[R]] =
-      new +[Succ[A], N] {
-        override type Result = Succ[R]
-      }
-  }
-
-  // Less
-  trait <[A <: Nat, B <: Nat]
-
-  object < {
-    given basic[A <: Nat]: <[_0, Succ[A]] with                                        {}
-    given inductive[A <: Nat, B <: Nat](using lte: <[A, B]): <[Succ[A], Succ[B]] with {}
-  }
-
-  // Greater
-  trait >[A <: Nat, B <: Nat]
-
-  object > {
-    given basic[A <: Nat]: >[Succ[A], _0] with                                        {}
-    given inductive[A <: Nat, B <: Nat](using gte: >[A, B]): >[Succ[A], Succ[B]] with {}
-  }
-
-  // Greater?
-  type >?[A <: Nat, B <: Nat] = Option[A > B]
-
-  object >? {
-    given exists[A <: Nat, B <: Nat](using ev: A > B): (A >? B)        = Option(ev)
-    given notExistsEqual[A <: Nat, B <: Nat](using A =:= B): (A >? B)  = Option.empty
-    given notExistsLess[A <: Nat, B <: Nat](using ev: A < B): (A >? B) = Option.empty
-  }
 }

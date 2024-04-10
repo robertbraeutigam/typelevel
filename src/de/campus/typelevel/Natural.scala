@@ -1,6 +1,7 @@
 package de.campus.typelevel
 
 import de.campus.typelevel.Peano.*
+import de.campus.typelevel.PeanoOps.*
 
 case class Natural[MIN <: Nat, MAX <: Nat](value: BigInt) {
   def +[MIN2 <: Nat, MAX2 <: Nat](
