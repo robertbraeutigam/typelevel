@@ -3,15 +3,4 @@ package de.campus.typelevel
 import de.campus.typelevel.Peano.*
 import de.campus.typelevel.PeanoOps.*
 
-case class Natural[MIN <: Nat, MAX <: Nat](value: BigInt) {
-  def +[MIN2 <: Nat, MAX2 <: Nat](
-      other: Natural[MIN2, MAX2]
-  )(using min: MIN + MIN2, max: MAX + MAX2, isHigh: max.Result >? _5): Natural[min.Result, max.Result] = {
-    if (isHigh.isEmpty) {
-      println("Adding low numbers...")
-    } else {
-      println("Adding high numbers...")
-    }
-    Natural(value + other.value)
-  }
-}
+// What's a "Natural"?
