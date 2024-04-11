@@ -1,5 +1,6 @@
 package de.campus.typelevel
 
+import de.campus.typelevel.Natural.AddNatural
 import de.campus.typelevel.Peano.{Nat, *}
 import de.campus.typelevel.PeanoOps.*
 
@@ -10,7 +11,7 @@ sealed trait Natural[MIN <: Nat, MAX <: Nat] {
       minSum: MIN + MIN2,
       maxSum: MAX + MAX2,
       ev: minSum.Result <= maxSum.Result,
-      small: _5 >? maxSum.Result
+      add: AddNatural[minSum.Result, maxSum.Result]
   ): Natural[minSum.Result, maxSum.Result]
 }
 
@@ -37,15 +38,31 @@ object Natural {
         minSum: MIN + MIN2,
         maxSum: MAX + MAX2,
         ev: minSum.Result <= maxSum.Result,
-        small: _5 >? maxSum.Result
-    ): Natural[minSum.Result, maxSum.Result] = if (small.isDefined) {
-      println("Adding with optimization")
-      OptimizedNatural((other.asInstanceOf[OptimizedNatural[_, _]].b + b).toByte)
-    } else {
-      println("Adding withOUT optimization")
-      other match
-        case natural: OptimizedNatural[_, _] => HighNatural(b + natural.b.toInt)
-        case natural: HighNatural[_, _]      => HighNatural(b.toInt + natural.v)
+        add: AddNatural[minSum.Result, maxSum.Result]
+    ): Natural[minSum.Result, maxSum.Result] = add.plus(this, other)
+  }
+
+  trait AddNatural[MIN <: Nat, MAX <: Nat] {
+    def plus(left: Natural[_, _], right: Natural[_, _]): Natural[MIN, MAX]
+  }
+
+  given optimizedAdd[MIN <: Nat, MAX <: Nat](using MAX <= _5, MIN <= MAX): AddNatural[MIN, MAX] with {
+    override def plus(left: Natural[_, _], right: Natural[_, _]): Natural[MIN, MAX] = {
+      println("Using optimized add...")
+      OptimizedNatural[MIN, MAX](
+        (left.asInstanceOf[OptimizedNatural[_, _]].b + right.asInstanceOf[OptimizedNatural[_, _]].b).toByte
+      )
+    }
+  }
+
+  given highAdd[MIN <: Nat, MAX <: Nat](using MAX > _5, MIN <= MAX): AddNatural[MIN, MAX] with {
+    override def plus(left: Natural[_, _], right: Natural[_, _]): Natural[MIN, MAX] = {
+      println("Unoptimized add..")
+      (left, right) match
+        case (left: HighNatural[_, _], right: HighNatural[_, _])           => HighNatural(left.v + right.v)
+        case (left: HighNatural[_, _], right: OptimizedNatural[_, _])      => HighNatural(left.v + right.b.toInt)
+        case (left: OptimizedNatural[_, _], right: HighNatural[_, _])      => HighNatural(left.b.toInt + right.v)
+        case (left: OptimizedNatural[_, _], right: OptimizedNatural[_, _]) => HighNatural(left.b + right.b)
     }
   }
 
@@ -56,9 +73,7 @@ object Natural {
         minSum: MIN + MIN2,
         maxSum: MAX + MAX2,
         ev: minSum.Result <= maxSum.Result,
-        small: _5 >? maxSum.Result
-    ): Natural[minSum.Result, maxSum.Result] = other match
-      case natural: OptimizedNatural[_, _] => HighNatural(v + natural.b.toInt)
-      case natural: HighNatural[_, _]      => HighNatural(v + natural.v)
+        add: AddNatural[minSum.Result, maxSum.Result]
+    ): Natural[minSum.Result, maxSum.Result] = add.plus(this, other)
   }
 }
