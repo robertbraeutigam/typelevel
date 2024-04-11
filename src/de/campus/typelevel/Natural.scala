@@ -31,7 +31,7 @@ object Natural {
     override def create(v: BigInt): Natural[MIN, MAX] = HighNatural[MIN, MAX](v)
   }
 
-  class OptimizedNatural[MIN <: Nat, MAX <: Nat](using MIN <= MAX)(val b: Byte) extends Natural[MIN, MAX] {
+  case class OptimizedNatural[MIN <: Nat, MAX <: Nat](b: Byte)(using MIN <= MAX) extends Natural[MIN, MAX] {
     override def +[MIN2 <: Nat, MAX2 <: Nat](
         other: Natural[MIN2, MAX2]
     )(using
@@ -66,7 +66,7 @@ object Natural {
     }
   }
 
-  class HighNatural[MIN <: Nat, MAX <: Nat](using MIN <= MAX)(val v: BigInt) extends Natural[MIN, MAX] {
+  case class HighNatural[MIN <: Nat, MAX <: Nat](v: BigInt)(using MIN <= MAX) extends Natural[MIN, MAX] {
     override def +[MIN2 <: Nat, MAX2 <: Nat](
         other: Natural[MIN2, MAX2]
     )(using
